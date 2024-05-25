@@ -1,0 +1,15 @@
+{
+  "language": "English",
+  "@language": {
+    "description": "Lang"
+  },
+  "redButton": "Use this panic button if your life is at risk.",
+  "yellowButton": "Use this button if you need help (Ex: Flat tire)",
+  "greenButton": "Use this button in case of natural emergency",
+  "blueButton": "Use this button to notify that your destination has arrived safely",
+  "hintLanguageDropdown": "Select language",
+  "home": "Home",
+  "contacts": "Contacts",
+  "settings": "Settings",
+  "help": "Terms and Conditions"
+}

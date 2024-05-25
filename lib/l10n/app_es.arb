@@ -1,0 +1,15 @@
+{
+  "language": "Español",
+  "@language": {
+    "description": "Lenguaje español"
+  },
+  "redButton": "Use este botón de panico si su vida esta en riesgo",
+  "yellowButton": "Use este botón si necesita ayuda (Ej: Llanta pinchada)",
+  "greenButton": "Use este botón en caso de emergencia natural",
+  "blueButton": "Use este botón para avisar que llegó bien su destino",
+  "hintLanguageDropdown": "Selecciona un idioma",
+  "home": "Inicio",
+  "contacts": "Contactos",
+  "settings": "Configuración",
+  "help": "Terminos y condiciones"
+}
