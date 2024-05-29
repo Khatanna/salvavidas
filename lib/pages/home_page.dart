@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-// import 'package:flutter_sms/flutter_sms.dart';
+import 'package:flutter_sms/flutter_sms.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:salvavidas/db/operation.dart';
 import 'package:salvavidas/provider/lang_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +20,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double _latitude = 0;
   double _longitude = 0;
+  bool _sending = false;
   final MapController _mapController = MapController();
 
   Future<Position> _getCurrentLocation() async {
@@ -53,10 +55,92 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  _sendSms(String message) async {
+    if (_sending) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        AppLocalizations.of(context)!.sending,
+      )));
+    }
+    ;
+    try {
+      setState(() {
+        _sending = true;
+      });
+      final location = await Geolocator.getCurrentPosition();
+      final textLocation =
+          'https://www.google.com/maps?q=${location.latitude},${location.longitude}';
+
+      final contacts = await Operation.getContacts();
+
+      await sendSMS(
+          message: "$message: $textLocation",
+          recipients: contacts.map((e) => e.phone).toList(),
+          sendDirect: true);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        AppLocalizations.of(context)!.successSent,
+      )));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+        AppLocalizations.of(context)!.errorSent,
+      )));
+    } finally {
+      setState(() {
+        _sending = false;
+      });
+    }
+  }
+
+  Future<void> _requestPermissions() async {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.sms,
+      Permission.location,
+      Permission.contacts,
+    ].request();
+
+    _handlePermissionStatus(statuses[Permission.sms], "SMS");
+    _handlePermissionStatus(statuses[Permission.location], "ubicación");
+    _handlePermissionStatus(statuses[Permission.contacts], "contactos");
+  }
+
+  void _handlePermissionStatus(PermissionStatus? status, String permission) {
+    if (status == null || status.isDenied) {
+      showPermissionDeniedDialog(permission);
+    } else if (status.isGranted) {
+      print("Permiso de $permission concedido");
+    } else {
+      print("Permiso de $permission estado: $status");
+    }
+  }
+
+  void showPermissionDeniedDialog(String permission) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Permiso $permission denegado"),
+          content: Text(
+              "Por favor, habilita el permiso de $permission en la configuración de la aplicación."),
+          actions: [
+            TextButton(
+              child: const Text("OK"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
-
+    _requestPermissions();
     _getPreferences();
 
     _getCurrentLocation().then((Position position) {
@@ -73,153 +157,131 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            height: 300,
-            width: double.infinity,
-            child: FlutterMap(
-              mapController: _mapController,
-              options: const MapOptions(
-                initialCenter: LatLng(51.5, -0.09),
-                initialZoom: 13.0,
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate:
-                      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                ),
-                MarkerLayer(markers: [
-                  Marker(
-                      point: LatLng(_latitude, _longitude),
-                      child: const Icon(
-                        Icons.location_on,
-                        color: Color.fromRGBO(136, 39, 39, 1),
-                        size: 35,
-                      ))
-                ])
-              ],
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Flexible(
+          flex: 5,
+          child: FlutterMap(
+            mapController: _mapController,
+            options: const MapOptions(
+              initialCenter: LatLng(51.5, -0.09),
+              initialZoom: 13.0,
             ),
+            children: [
+              TileLayer(
+                urlTemplate:
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+              ),
+              MarkerLayer(markers: [
+                Marker(
+                    point: LatLng(_latitude, _longitude),
+                    child: const Icon(
+                      Icons.location_on,
+                      color: Color.fromRGBO(136, 39, 39, 1),
+                      size: 35,
+                    ))
+              ]),
+            ],
           ),
-          const SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 20, right: 20),
+        ),
+        Flexible(
+          flex: 7,
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: () async {
-                    // try {
-                    //   await sendSMS(
-                    //       message: "mensaje de prueba",
-                    //       recipients: ['+59176552421'],
-                    //       sendDirect: true);
-                    //   if (!context.mounted) return;
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //       const SnackBar(content: Text("Se envio el mensaje")));
-                    // } catch (e) {
-                    //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    //       content: Text("No se logro enviar el mensaje")));
-                    // }
-                  },
+                  onTap: () =>
+                      _sendSms(AppLocalizations.of(context)!.redButtonMessaje),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Image(
                         image: AssetImage('assets/icons/security_red.png'),
-                        width: 85,
+                        width: 80,
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 5,
                       ),
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.redButton,
-                          style: const TextStyle(fontSize: 25),
+                          style: const TextStyle(fontSize: 20),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
                 GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Se envio el mensaje")));
-                  },
+                  onTap: () => _sendSms(
+                      AppLocalizations.of(context)!.yellowButtonMessaje),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Image(
                         image: AssetImage('assets/icons/security_yellow.png'),
-                        width: 85,
+                        width: 80,
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 5,
                       ),
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.yellowButton,
-                          style: const TextStyle(fontSize: 25),
+                          style: const TextStyle(fontSize: 20),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
                 GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Se envio el mensaje")));
-                  },
+                  onTap: () => _sendSms(
+                      AppLocalizations.of(context)!.greenButtonMessaje),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Image(
                         image: AssetImage('assets/icons/security_green.png'),
-                        width: 85,
+                        width: 80,
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 5,
                       ),
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.greenButton,
-                          style: const TextStyle(fontSize: 25),
+                          style: const TextStyle(fontSize: 20),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 15,
                 ),
                 GestureDetector(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Se envio el mensaje")));
-                  },
+                  onTap: () =>
+                      _sendSms(AppLocalizations.of(context)!.blueButtonMessaje),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       const Image(
                         image: AssetImage('assets/icons/security_blue.png'),
-                        width: 85,
+                        width: 80,
                       ),
                       const SizedBox(
-                        width: 10,
+                        width: 5,
                       ),
                       Expanded(
                         child: Text(
                           AppLocalizations.of(context)!.blueButton,
-                          style: const TextStyle(fontSize: 25),
+                          style: const TextStyle(fontSize: 20),
                         ),
                       ),
                     ],
@@ -228,8 +290,8 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

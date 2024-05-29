@@ -34,38 +34,50 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          DropdownButton<String>(
-            value: _value,
-            onChanged: (value) async {
-              final SharedPreferences prefs =
-                  await SharedPreferences.getInstance();
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  AppLocalizations.of(context)!.settingsLanguage,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                DropdownButton<String>(
+                  value: _value,
+                  onChanged: (value) async {
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
 
-              prefs.setString('language', value!);
-              if (!context.mounted) return;
-              Provider.of<LangProvider>(context, listen: false)
-                  .setLocale(Locale(value));
-              setState(() {
-                _value = value;
-              });
-            },
-            icon: const Icon(Icons.arrow_drop_down),
-            hint: Text(
-              AppLocalizations.of(context)!.hintLanguageDropdown,
-            ),
-            items: const [
-              DropdownMenuItem(
-                value: 'es',
-                child: Text('Español'),
-              ),
-              DropdownMenuItem(
-                value: 'en',
-                child: Text('English'),
-              ),
-            ],
-          )
-        ],
+                    prefs.setString('language', value!);
+                    if (!context.mounted) return;
+                    Provider.of<LangProvider>(context, listen: false)
+                        .setLocale(Locale(value));
+                    setState(() {
+                      _value = value;
+                    });
+                  },
+                  icon: const Icon(Icons.arrow_drop_down),
+                  hint: Text(
+                    AppLocalizations.of(context)!.hintLanguageDropdown,
+                  ),
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'es',
+                      child: Text('Español'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'en',
+                      child: Text('English'),
+                    ),
+                  ],
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

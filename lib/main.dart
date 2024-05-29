@@ -7,6 +7,7 @@ import 'package:salvavidas/pages/home_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:salvavidas/pages/settings_page.dart';
+import 'package:salvavidas/pages/term_and_conditions_page.dart';
 import 'package:salvavidas/provider/lang_provider.dart';
 
 void main() {
@@ -23,9 +24,8 @@ final GoRouter _router = GoRouter(routes: [
         builder: (context, state) => const SettingsPage(),
       ),
       GoRoute(
-        path: 'terms',
-        builder: (context, state) => Text("Terms and conditions"),
-      ),
+          path: 'terms',
+          builder: (context, state) => const TermAndConditionsPage()),
     ],
   ),
 ]);
@@ -70,9 +70,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
 
-  final screens = const [HomePage(), ContactPage()];
+  final screens = const [ContactPage(), HomePage(), SettingsPage()];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size.width;
@@ -108,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               PopupMenuItem(
+                onTap: () => context.go('/terms'),
                 child: Row(
                   children: [
                     const Icon(
@@ -139,6 +140,14 @@ class _MyHomePageState extends State<MyHomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: const Icon(
+              size: 50,
+              Icons.person,
+              color: Color.fromRGBO(136, 39, 39, 1),
+            ),
+            label: AppLocalizations.of(context)!.contacts,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(
               Icons.home,
               size: 50,
               color: Color.fromRGBO(136, 39, 39, 1),
@@ -148,10 +157,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: const Icon(
               size: 50,
-              Icons.person,
+              Icons.settings,
               color: Color.fromRGBO(136, 39, 39, 1),
             ),
-            label: AppLocalizations.of(context)!.contacts,
+            label: AppLocalizations.of(context)!.settings,
           )
         ],
       ),
