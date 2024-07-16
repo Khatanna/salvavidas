@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "480725532761",
+    "project_id": "salvavidas-6457d",
+    "storage_bucket": "salvavidas-6457d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480725532761:android:67ee7e935d79b4f629f148",
+        "android_client_info": {
+          "package_name": "com.salvavidas.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "480725532761-431mo9fll9bd7kkd8eop9jv0ilqo189j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.salvavidas.app",
+            "certificate_hash": "a284926e303c9c92cdd8d3e6b5299668e5149308"
+          }
+        },
+        {
+          "client_id": "480725532761-6pvendlp8ft5iip565d2mbmng52gmnju.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCla8TCqjDXKCYCpTMffPolxAdgQi96Dx0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "480725532761-6pvendlp8ft5iip565d2mbmng52gmnju.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "480725532761-ojldk9vmn0gibg4co5a64n1ta4lejc34.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.salvavidas"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

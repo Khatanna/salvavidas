@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/l10n/l10n.dart';
@@ -6,49 +7,256 @@ import 'package:salvavidas/pages/contact_page.dart';
 import 'package:salvavidas/pages/home_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:salvavidas/pages/login_page.dart';
 import 'package:salvavidas/pages/settings_page.dart';
+import 'package:salvavidas/pages/sync_page.dart';
 import 'package:salvavidas/pages/term_and_conditions_page.dart';
+import 'package:salvavidas/provider/auth_provider.dart';
 import 'package:salvavidas/provider/lang_provider.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => LangProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => AuthProvider(),
+        ),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
 
-final GoRouter _router = GoRouter(routes: [
-  GoRoute(
-    path: '/',
-    builder: (context, state) => const MyHomePage(),
-    routes: [
-      GoRoute(
-        path: 'settings',
-        builder: (context, state) => const SettingsPage(),
+class ScaffoldWithNavBar extends StatefulWidget {
+  final Widget child;
+
+  const ScaffoldWithNavBar({super.key, required this.child});
+
+  @override
+  State<ScaffoldWithNavBar> createState() => _ScaffoldWithNavBarState();
+}
+
+class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
+  int _selectedIndex = 0;
+
+  final Map<int, String> _routes = {
+    0: '/home',
+    1: '/contacts',
+    2: '/map',
+    3: '/sync',
+    4: '/settings',
+    // 5: '/terms'
+  };
+
+  void _onItemTapped(int index) {
+    if (index == 2) {
+      Geolocator.getCurrentPosition().then((location) {
+        final String url =
+            'https://www.google.com/maps?q=${location.latitude.toString()},${location.longitude.toString()}';
+        launchUrlString(url);
+      });
+      return;
+    }
+
+    setState(() {
+      _selectedIndex = index;
+    });
+    context.go(_routes[index]!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
+        foregroundColor: Colors.white,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/icons/header_banner.png'),
+              fit: BoxFit.fitWidth,
+              alignment: Alignment.bottomCenter,
+            ),
+          ),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(top: 10),
+            child: PopupMenuButton(
+              itemBuilder: (BuildContext context) {
+                return <PopupMenuEntry>[
+                  PopupMenuItem(
+                    onTap: () => context.go('/settings'),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.settings,
+                          color: Color.fromRGBO(136, 39, 39, 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.settings,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    onTap: () => context.go('/terms'),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.question_mark_outlined,
+                          color: Color.fromRGBO(136, 39, 39, 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.help,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    onTap: () {
+                      const String url = 'https://www.gottret.com/salvavidas/';
+                      launchUrlString(url);
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.public,
+                          color: Color.fromRGBO(136, 39, 39, 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.web,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const PopupMenuDivider(),
+                  PopupMenuItem(
+                    onTap: () => {
+                      authProvider.logout().then((value) {
+                        context.go('/login');
+                      })
+                    },
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.logout,
+                          color: Color.fromRGBO(136, 39, 39, 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.logout,
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              },
+              child: const IconButton(
+                onPressed: null,
+                icon: Icon(
+                  Icons.more_vert,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      GoRoute(
-          path: 'terms',
-          builder: (context, state) => const TermAndConditionsPage()),
-    ],
-  ),
-]);
+      body: widget.child,
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 0,
+        unselectedFontSize: 10,
+        backgroundColor: const Color.fromRGBO(136, 39, 39, 1),
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.white70,
+        onTap: _onItemTapped,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: const Icon(
+              Icons.home,
+              color: Colors.white,
+            ),
+            label: AppLocalizations.of(context)!.home,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(
+              Icons.person,
+              color: Colors.white,
+            ),
+            label: AppLocalizations.of(context)!.contacts,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(
+              Icons.map,
+              color: Colors.white,
+            ),
+            label: AppLocalizations.of(context)!.myLocation,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(
+              Icons.rocket_launch_rounded,
+              color: Colors.white,
+            ),
+            label: AppLocalizations.of(context)!.sync,
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            label: AppLocalizations.of(context)!.settings,
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => LangProvider())],
-      child: SafeArea(
-        child: Builder(
-          builder: (context) => MaterialApp.router(
-            title: 'Salvavidas',
-            routerConfig: _router,
+    return Consumer<LangProvider>(
+      builder: (context, value, child) {
+        return SafeArea(
+          child: MaterialApp.router(
+            routerConfig: _createRouter(context),
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: const Color.fromRGBO(136, 39, 39, 1),
+              ),
               useMaterial3: true,
             ),
             supportedLocales: L10n.all,
-            locale: Provider.of<LangProvider>(context).locale,
+            locale: value.locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,
@@ -56,114 +264,63 @@ class MyApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
-}
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  GoRouter _createRouter(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    return GoRouter(
+      initialLocation: '/home',
+      routes: [
+        GoRoute(
+          path: '/login',
+          builder: (context, state) => const LoginPage(),
+          redirect: (context, state) {
+            if (authProvider.isAuth) {
+              return state.fullPath;
+            }
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 1;
-
-  final screens = const [ContactPage(), HomePage(), SettingsPage()];
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width;
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.white,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: const AssetImage('assets/icons/header_banner.png'),
-              fit: size > 600 ? BoxFit.fitWidth : BoxFit.cover,
-            ),
-          ),
+            return null;
+          },
         ),
-        actions: [
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => [
-              PopupMenuItem(
-                onTap: () => context.go('/settings'),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.settings,
-                      color: Color.fromRGBO(136, 39, 39, 1),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.settings,
-                    )
-                  ],
-                ),
-              ),
-              PopupMenuItem(
-                onTap: () => context.go('/terms'),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.question_mark_outlined,
-                      color: Color.fromRGBO(136, 39, 39, 1),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.help,
-                    )
-                  ],
-                ),
-              )
-            ],
-            child: const Icon(Icons.more_vert),
-          )
-        ],
-      ),
-      body: screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (int index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: const Icon(
-              size: 50,
-              Icons.person,
-              color: Color.fromRGBO(136, 39, 39, 1),
+        ShellRoute(
+          navigatorKey: GlobalKey<NavigatorState>(),
+          builder: (context, state, child) {
+            return ScaffoldWithNavBar(child: child);
+          },
+          redirect: (context, state) {
+            if (!authProvider.isAuth) {
+              return '/login';
+            }
+
+            return null;
+          },
+          routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => const HomePage(),
             ),
-            label: AppLocalizations.of(context)!.contacts,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(
-              Icons.home,
-              size: 50,
-              color: Color.fromRGBO(136, 39, 39, 1),
+            GoRoute(
+              path: '/contacts',
+              builder: (context, state) => const ContactPage(),
             ),
-            label: AppLocalizations.of(context)!.home,
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(
-              size: 50,
-              Icons.settings,
-              color: Color.fromRGBO(136, 39, 39, 1),
+            GoRoute(
+              path: '/sync',
+              builder: (context, state) => const SyncPage(),
             ),
-            label: AppLocalizations.of(context)!.settings,
-          )
-        ],
-      ),
+            GoRoute(
+              path: '/settings',
+              builder: (context, state) => const SettingsPage(),
+            ),
+            GoRoute(
+              path: '/terms',
+              builder: (context, state) => const TermAndConditionsPage(),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

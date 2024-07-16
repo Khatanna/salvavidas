@@ -51,4 +51,10 @@ class Operation {
     final Database db = await openDB();
     await db.delete('contact');
   }
+
+  static Future<int> countContacts() async {
+    final Database db = await openDB();
+    final List<Map<String, dynamic>> maps = await db.query('contact');
+    return maps.length;
+  }
 }

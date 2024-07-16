@@ -1,0 +1,18 @@
+const Map<String, String> dictionaryFromCountry = {
+  'en': 'English',
+  'es': 'Español',
+  'fr': 'Français',
+  'de': 'Deutsch',
+  'it': 'Italiano',
+  'ja': '日本語',
+  'pt': 'Português',
+  'ru': 'русский',
+  'zh': '中文',
+  'ar': 'العربية',
+  'pl': 'Polski',
+  'tr': 'Türkçe',
+  'uk': 'українська',
+  'nl': 'Nederlands',
+  'el': 'Ελληνικά',
+  'kr': '한국어',
+};

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:salvavidas/db/operation.dart';
 import 'package:salvavidas/models/Contact.dart' as Contact;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -24,7 +25,7 @@ class _ContactPageState extends State<ContactPage> {
         _contacts = [..._contacts, contact];
       });
     } catch (e) {
-      print(e);
+      // Handle exception
     }
   }
 
@@ -53,13 +54,13 @@ class _ContactPageState extends State<ContactPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: _contacts.isEmpty
-          ? const Center(
+          ? Center(
               child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.person, size: 100, color: Colors.grey),
-                Text('No hay contactos guardados',
-                    style: TextStyle(fontSize: 20, color: Colors.grey)),
+                const Icon(Icons.person, size: 100, color: Colors.grey),
+                Text(AppLocalizations.of(context)!.emptyContacts,
+                    style: const TextStyle(fontSize: 20, color: Colors.grey)),
               ],
             ))
           : ListView.builder(
