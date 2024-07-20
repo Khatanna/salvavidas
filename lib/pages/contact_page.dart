@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+import 'package:logger/logger.dart';
 import 'package:salvavidas/db/operation.dart';
 import 'package:salvavidas/models/Contact.dart' as Contact;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -13,20 +14,77 @@ class ContactPage extends StatefulWidget {
 
 class _ContactPageState extends State<ContactPage> {
   List<Contact.Contact> _contacts = [];
-  _getNewPhoneNumber() async {
-    try {
-      final PhoneContact pick = await FlutterContactPicker.pickPhoneContact();
+  _getNewPhoneNumber() {
+    FlutterContactPicker.pickPhoneContact().then((pick) async {
+      final color = await showDialog<Color?>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Seleciona el color del botón'),
+            content: SingleChildScrollView(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  ClipOval(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop(Colors.red);
+                      },
+                      child: Image.asset(
+                        'assets/icons/security_red.png',
+                        width: 60,
+                      ),
+                    ),
+                  ),
+                  ClipOval(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop(Colors.yellow);
+                      },
+                      child: Image.asset(
+                        'assets/icons/security_yellow.png',
+                        width: 60,
+                      ),
+                    ),
+                  ),
+                  ClipOval(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop(Colors.green);
+                      },
+                      child: Image.asset(
+                        'assets/icons/security_green.png',
+                        width: 60,
+                      ),
+                    ),
+                  ),
+                  ClipOval(
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop(Colors.blue);
+                      },
+                      child: Image.asset(
+                        'assets/icons/security_blue.png',
+                        width: 60,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
       final contact = Contact.Contact(
-          name: pick.fullName ?? "Sin nombre",
-          phone: pick.phoneNumber?.number ?? 'Sin número');
-
+        name: pick.fullName ?? "Sin nombre",
+        phone: pick.phoneNumber?.number ?? 'Sin número',
+        buttonColor: color ?? Colors.red,
+      );
       Operation.insertContact(contact);
       setState(() {
         _contacts = [..._contacts, contact];
       });
-    } catch (e) {
-      // Handle exception
-    }
+    });
   }
 
   _getContacts() {
@@ -67,7 +125,10 @@ class _ContactPageState extends State<ContactPage> {
               itemCount: _contacts.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  leading: const Icon(Icons.person),
+                  leading: CircleAvatar(
+                    backgroundColor: _contacts[index].buttonColor,
+                    child: const Icon(Icons.person, color: Colors.white),
+                  ),
                   title: Text(_contacts[index].name),
                   subtitle: Text(_contacts[index].phone),
                   trailing: IconButton(
@@ -79,7 +140,6 @@ class _ContactPageState extends State<ContactPage> {
                       });
                     },
                   ),
-                  onTap: _getNewPhoneNumber,
                 );
               }),
       floatingActionButton: FloatingActionButton(

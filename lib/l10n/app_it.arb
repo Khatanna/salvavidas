@@ -3,6 +3,7 @@
   "@language": {
     "description": "Lingua"
   },
+  "guide": "Guida",
   "web": "Pagina web",
   "unknown": "Sconosciuto",
   "notFoundDevices": "Dispositivi non trovati",
@@ -10,6 +11,7 @@
   "turnOn": "Accendi",
   "connect": "Connetti",
   "messageStrategy": "Modalità di invio dei messaggi",
+  "whatsapp": "Invia tramite WhatsApp",
   "disclaimer": "Avviso legale: il costo del messaggio è basato sul piano del tuo operatore telefonico.",
   "saved": "Salvato",
   "logout": "Disconnettersi",

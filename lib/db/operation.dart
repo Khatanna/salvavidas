@@ -1,19 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:salvavidas/models/Contact.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:salvavidas/models/Button.dart';
 
 class Operation {
   static Future<Database> openDB() async {
     final dbPath = await getDatabasesPath();
-    return openDatabase(join(dbPath, 'contacts.db'), version: 1,
+    return openDatabase(join(dbPath, 'contacts.db'), version: 2,
         onCreate: (Database db, int version) async {
-      await db.execute('''
+      await db.execute(
+        '''
           CREATE TABLE contact (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT,
-            phone TEXT
+            phone TEXT,
+            buttonColor TEXT
           )
-          ''');
+          ''',
+      );
     });
   }
 
@@ -24,14 +30,26 @@ class Operation {
     return contact;
   }
 
-  static Future<List<Contact>> getContacts() async {
+  static Future<List<Contact>> getContacts({Button? button}) async {
     final Database db = await openDB();
-    final List<Map<String, dynamic>> maps = await db.query('contact');
+    final List<Map<String, dynamic>> maps = await db.query(
+      'contact',
+      where: button == null
+          ? null
+          : button == Button.red
+              ? 'buttonColor = ${Colors.red.value.toString()}'
+              : button == Button.yellow
+                  ? 'buttonColor = ${Colors.yellow.value.toString()}'
+                  : button == Button.green
+                      ? 'buttonColor = ${Colors.green.value.toString()}'
+                      : 'buttonColor = ${Colors.blue.value.toString()}',
+    );
     return List.generate(maps.length, (i) {
       return Contact(
         id: maps[i]['id'],
         name: maps[i]['name'],
         phone: maps[i]['phone'],
+        buttonColor: Color(int.parse(maps[i]['buttonColor'])),
       );
     });
   }

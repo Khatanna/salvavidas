@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/l10n/l10n.dart';
 import 'package:salvavidas/pages/contact_page.dart';
+import 'package:salvavidas/pages/help_page.dart';
 import 'package:salvavidas/pages/home_page.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -115,23 +116,6 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
                     ),
                   ),
                   PopupMenuItem(
-                    onTap: () => context.go('/terms'),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.question_mark_outlined,
-                          color: Color.fromRGBO(136, 39, 39, 1),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        Text(
-                          AppLocalizations.of(context)!.help,
-                        ),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem(
                     onTap: () {
                       const String url = 'https://www.gottret.com/salvavidas/';
                       launchUrlString(url);
@@ -147,6 +131,40 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
                         ),
                         Text(
                           AppLocalizations.of(context)!.web,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    onTap: () => context.go('/terms'),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.document_scanner_sharp,
+                          color: Color.fromRGBO(136, 39, 39, 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.help,
+                        ),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem(
+                    onTap: () => context.go('/help'),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.help,
+                          color: Color.fromRGBO(136, 39, 39, 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.guide,
                         ),
                       ],
                     ),
@@ -313,6 +331,10 @@ class MyApp extends StatelessWidget {
             GoRoute(
               path: '/settings',
               builder: (context, state) => const SettingsPage(),
+            ),
+            GoRoute(
+              path: '/help',
+              builder: (context, state) => const HelpPage(),
             ),
             GoRoute(
               path: '/terms',

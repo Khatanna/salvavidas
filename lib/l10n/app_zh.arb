@@ -3,6 +3,7 @@
   "@language": {
     "description": "语言"
   },
+  "guide": "帮助",
   "web": "主页",
   "unknown": "未知",
   "notFoundDevices": "未找到设备",
@@ -10,6 +11,7 @@
   "turnOn": "打开",
   "connect": "连接",
   "messageStrategy": "消息策略",
+  "whatsapp": "通过 WhatsApp 发送",
   "disclaimer": "免责声明：短信费用根据您的运营商计划而定。",
   "saved": "已保存",
   "logout": "退出",

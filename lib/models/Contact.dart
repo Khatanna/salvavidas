@@ -1,15 +1,24 @@
+import 'package:flutter/material.dart' show Color;
+
 class Contact {
   int? id;
   String name;
   String phone;
+  Color buttonColor;
 
-  Contact({this.id, required this.name, required this.phone});
+  Contact({
+    this.id,
+    required this.name,
+    required this.phone,
+    required this.buttonColor,
+  });
 
   factory Contact.fromJson(Map<String, dynamic> json) {
     return Contact(
       id: json['id'],
       name: json['name'],
       phone: json['phone'],
+      buttonColor: Color(int.parse(json['buttonColor'])),
     );
   }
 
@@ -18,6 +27,7 @@ class Contact {
       'id': id,
       'name': name,
       'phone': phone,
+      'buttonColor': buttonColor.value.toString(),
     };
   }
 
@@ -26,11 +36,12 @@ class Contact {
       'id': id,
       'name': name,
       'phone': phone,
+      'buttonColor': buttonColor.value.toString(),
     };
   }
 
   @override
   String toString() {
-    return 'Contact{name: $name, phone: $phone}';
+    return 'Contact{id: $id, name: $name, phone: $phone, buttonColor: $buttonColor}';
   }
 }

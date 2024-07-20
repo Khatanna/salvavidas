@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/constants.dart';
 import 'package:salvavidas/l10n/l10n.dart';
@@ -53,7 +54,8 @@ class _SettingsPageState extends State<SettingsPage> {
       floatingActionButton: IconButton(
         color: Colors.white,
         style: ButtonStyle(
-          backgroundColor: WidgetStateProperty.all(Colors.primaries.first),
+          backgroundColor:
+              WidgetStateProperty.all(const Color.fromRGBO(136, 39, 39, 1)),
         ),
         onPressed: _saveSettings,
         icon: const Icon(Icons.save),
@@ -69,7 +71,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 Row(children: [
                   const Icon(
                     Icons.language,
-                    color: Colors.grey,
+                    color: Colors.orange,
                   ),
                   const SizedBox(width: 10),
                   Text(
@@ -107,6 +109,34 @@ class _SettingsPageState extends State<SettingsPage> {
               ],
             ),
             const SizedBox(height: 20),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Row(
+                children: [
+                  const FaIcon(
+                    FontAwesomeIcons.whatsapp,
+                    color: Colors.green,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    AppLocalizations.of(context)!.whatsapp,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+              Switch(
+                value: _messageStrategy == 'whatsapp',
+                onChanged: (value) {
+                  setState(() {
+                    _messageStrategy = value ? 'whatsapp' : 'sms';
+                  });
+                },
+              ),
+            ]),
+            const SizedBox(height: 20),
             Row(children: [
               const Icon(
                 Icons.phone,
@@ -130,54 +160,6 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             ),
             const SizedBox(height: 20),
-            Row(children: [
-              const Icon(
-                Icons.send,
-                color: Colors.grey,
-              ),
-              const SizedBox(width: 10),
-              Text(
-                AppLocalizations.of(context)!.messageStrategy,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey,
-                ),
-              ),
-            ]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Row(
-                  children: [
-                    Radio(
-                        value: "whatsapp",
-                        groupValue: _messageStrategy,
-                        onChanged: (value) {
-                          setState(() {
-                            _messageStrategy = value.toString();
-                          });
-                        }),
-                    const Text("Whatsapp"),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Radio(
-                      value: "sms",
-                      groupValue: _messageStrategy,
-                      onChanged: (value) {
-                        setState(() {
-                          _messageStrategy = value.toString();
-                        });
-                      },
-                    ),
-                    const Text("SMS"),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +168,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       const Icon(
                         Icons.message,
-                        color: Colors.grey,
+                        color: Colors.blue,
                       ),
                       const SizedBox(width: 10),
                       Text(

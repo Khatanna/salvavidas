@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:logger/logger.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:salvavidas/db/operation.dart';
 import 'package:salvavidas/models/Contact.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
-enum Button { red, yellow, green, blue }
+import 'package:salvavidas/models/Button.dart';
 
 class Buttons extends StatefulWidget {
   const Buttons({super.key});
@@ -68,7 +68,8 @@ class _ButtonsState extends State<Buttons> {
         _sending = true;
       });
 
-      List<Contact> contacts = await Operation.getContacts();
+      List<Contact> contacts = await Operation.getContacts(button: button);
+
       final recipients = contacts.map((e) => e.phone).toList();
       final location = await Geolocator.getCurrentPosition();
       final prefs = await SharedPreferences.getInstance();
@@ -94,19 +95,20 @@ class _ButtonsState extends State<Buttons> {
       final message = await _getMessage(button);
       final messageStrategy = prefs.getString('messageStrategy') ?? 'sms';
 
+      await sendSMS(
+        message: "$message: $textLocation",
+        recipients: recipients,
+        sendDirect: true,
+      );
+
       if (messageStrategy == 'whatsapp') {
         for (var i = 0; i < recipients.length; i++) {
           final element = recipients[i];
           launchUrlString(
               'https://wa.me/$element?text=$message: $textLocation');
         }
-      } else {
-        await sendSMS(
-          message: "$message: $textLocation",
-          recipients: recipients,
-          sendDirect: true,
-        );
       }
+
       scaffold.showSnackBar(
         SnackBar(
           content: Text(

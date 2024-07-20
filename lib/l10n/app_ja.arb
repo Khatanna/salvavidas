@@ -3,6 +3,7 @@
   "@language": {
     "description": "言語"
   },
+  "guide": "ガイド",
   "web": "ウェブページ",
   "unknown": "不明",
   "notFoundDevices": "デバイスが見つかりません",
@@ -10,6 +11,7 @@
   "turnOn": "オンにする",
   "connect": "接続",
   "messageStrategy": "メッセージ送信モード",
+  "whatsapp": "WhatsApp経由で送信",
   "disclaimer": "免責事項：メッセージ料金は、お使いの携帯電話会社のプランに基づいています。",
   "saved": "保存されました",
   "logout": "ログアウト",

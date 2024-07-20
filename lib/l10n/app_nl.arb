@@ -3,6 +3,7 @@
   "@language": {
     "description": "Taal"
   },
+  "guide": "Help",
   "web": "Website",
   "unknown": "Onbekend",
   "notFoundDevices": "Geen apparaten gevonden",
@@ -10,6 +11,7 @@
   "turnOn": "Aanzetten",
   "connect": "Verbinden",
   "messageStrategy": "Berichtstrategie",
+  "whatsapp": "Verzenden via WhatsApp",
   "disclaimer": "Disclaimer: De kosten van het bericht zijn gebaseerd op uw telefoonproviderplan.",
   "saved": "Opgeslagen",
   "logout": "Uitloggen",

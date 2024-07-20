@@ -3,6 +3,7 @@
   "@language": {
     "description": "Lang"
   },
+  "guide": "Ayuda",
   "web": "Web page",
   "unknown": "Unknown",
   "notFoundDevices": "No devices found",
@@ -10,6 +11,7 @@
   "turnOn": "Turn on",
   "connect": "Connect",
   "messageStrategy": "Message sending mode",
+  "whatsapp": "Send via WhatsApp",
   "disclaimer": "Disclaimer: The message rate is based on your phone operator's plan.",
   "saved": "Saved",
   "logout": "logout",

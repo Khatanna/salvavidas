@@ -3,6 +3,7 @@
   "@language": {
     "description": "Dil"
   },
+  "guide": "Yardım",
   "web": "Web sitesi",
   "unknown": "Bilinmeyen",
   "notFoundDevices": "Cihaz bulunamadı",
@@ -10,6 +11,7 @@
   "turnOn": "Aç",
   "connect": "Bağlan",
   "messageStrategy": "Mesaj gönderme stratejisi",
+  "whatsapp": "WhatsApp üzerinden gönder",
   "disclaimer": "Reddedilme: Mesaj ücreti, cep telefonu operatörünüzün tarifesine bağlıdır.",
   "saved": "Kaydedildi",
   "logout": "Çıkış",

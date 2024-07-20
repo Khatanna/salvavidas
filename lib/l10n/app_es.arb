@@ -3,6 +3,7 @@
   "@language": {
     "description": "Lenguaje español"
   },
+  "guide": "Ayuda",
   "web": "Pagina web",
   "unknown": "Desconocido",
   "notFoundDevices": "No se encontraron dispositivos",
@@ -10,6 +11,7 @@
   "turnOn": "Encender",
   "connect": "Conectar",
   "messageStrategy": "Modo de envio de mensajes",
+  "whatsapp": "Enviar por WhatsApp",
   "disclaimer": "Aclaración: La tarifa por mensaje esta basada en el plan de tu operador telefonico.",
   "saved": "Guardado",
   "logout": "Cerrar sesión",

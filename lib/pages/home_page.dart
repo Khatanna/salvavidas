@@ -22,24 +22,25 @@ class _HomePageState extends State<HomePage> {
       Permission.bluetooth,
       Permission.bluetoothAdvertise,
       Permission.bluetoothConnect,
-      Permission.bluetoothScan
+      Permission.bluetoothScan,
     ].request();
 
-    _handlePermissionStatus(statuses[Permission.sms], "SMS");
-    _handlePermissionStatus(statuses[Permission.location], "location");
-    _handlePermissionStatus(statuses[Permission.contacts], "contacts");
-    _handlePermissionStatus(statuses[Permission.bluetooth], "Bluetooth");
-    _handlePermissionStatus(
+    await _handlePermissionStatus(statuses[Permission.sms], "SMS");
+    await _handlePermissionStatus(statuses[Permission.location], "location");
+    await _handlePermissionStatus(statuses[Permission.contacts], "contacts");
+    await _handlePermissionStatus(statuses[Permission.bluetooth], "Bluetooth");
+    await _handlePermissionStatus(
         statuses[Permission.bluetoothAdvertise], "Bluetooth Advertise");
-    _handlePermissionStatus(
+    await _handlePermissionStatus(
         statuses[Permission.bluetoothConnect], "Bluetooth Connect");
-    _handlePermissionStatus(
+    await _handlePermissionStatus(
         statuses[Permission.bluetoothScan], "Bluetooth Scan");
   }
 
-  void _handlePermissionStatus(PermissionStatus? status, String permission) {
+  Future<void> _handlePermissionStatus(
+      PermissionStatus? status, String permission) async {
     if (status == null || status.isDenied) {
-      showPermissionDeniedDialog(permission);
+      await showPermissionDeniedDialog(permission);
     } else if (status.isGranted) {
       // print("Permiso de $permission concedido");
     } else {
@@ -47,8 +48,8 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void showPermissionDeniedDialog(String permission) {
-    showDialog(
+  Future<void> showPermissionDeniedDialog(String permission) {
+    return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(

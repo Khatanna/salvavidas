@@ -3,6 +3,7 @@
   "@language": {
     "description": "Idioma"
   },
+  "guide": "Ajuda",
   "web": "Página inicial",
   "unknown": "Desconhecido",
   "notFoundDevices": "Dispositivos não encontrados",
@@ -10,6 +11,7 @@
   "turnOn": "Ligar",
   "connect": "Conectar",
   "messageStrategy": "Estratégia de envio de mensagens",
+  "whatsapp": "Enviar via WhatsApp",
   "disclaimer": "Isenção de responsabilidade: O custo da mensagem é baseado no plano do seu provedor de telefonia.",
   "saved": "Salvo",
   "logout": "Sair",

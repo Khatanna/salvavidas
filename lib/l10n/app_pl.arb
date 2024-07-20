@@ -3,6 +3,7 @@
   "@language": {
     "description": "Język"
   },
+  "guide": "Pomoc",
   "web": "Strona główna",
   "unknown": "Nieznany",
   "notFoundDevices": "Nie znaleziono urządzeń",
@@ -10,6 +11,7 @@
   "turnOn": "Włącz",
   "connect": "Połącz",
   "messageStrategy": "Strategia wysyłania wiadomości",
+  "whatsapp": "Wyślij przez WhatsApp",
   "disclaimer": "Oświadczenie o wyłączeniu odpowiedzialności: Koszt wiadomości zależy od planu operatora telefonii komórkowej.",
   "saved": "Zapisano",
   "logout": "Wyloguj",
