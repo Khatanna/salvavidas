@@ -19,8 +19,15 @@ class _ContactPageState extends State<ContactPage> {
       final color = await showDialog<Color?>(
         context: context,
         builder: (BuildContext context) {
+          final screenWidth = MediaQuery.of(context).size.width;
+          final sizeByButton = (screenWidth - screenWidth * 0.45) / 4;
           return AlertDialog(
-            title: const Text('Seleciona el color del botón'),
+            title: Center(
+              child: Text(
+                AppLocalizations.of(context)!.selectButtonColor,
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
             content: SingleChildScrollView(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,7 +39,7 @@ class _ContactPageState extends State<ContactPage> {
                       },
                       child: Image.asset(
                         'assets/icons/security_red.png',
-                        width: 60,
+                        width: sizeByButton,
                       ),
                     ),
                   ),
@@ -43,7 +50,7 @@ class _ContactPageState extends State<ContactPage> {
                       },
                       child: Image.asset(
                         'assets/icons/security_yellow.png',
-                        width: 60,
+                        width: sizeByButton,
                       ),
                     ),
                   ),
@@ -54,7 +61,7 @@ class _ContactPageState extends State<ContactPage> {
                       },
                       child: Image.asset(
                         'assets/icons/security_green.png',
-                        width: 60,
+                        width: sizeByButton,
                       ),
                     ),
                   ),
@@ -65,7 +72,7 @@ class _ContactPageState extends State<ContactPage> {
                       },
                       child: Image.asset(
                         'assets/icons/security_blue.png',
-                        width: 60,
+                        width: sizeByButton,
                       ),
                     ),
                   ),

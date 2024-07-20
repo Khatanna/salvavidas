@@ -4,6 +4,7 @@
     "description": "Taal"
   },
   "guide": "Help",
+  "selectButtonColor": "Selecteer de knopkleur",
   "web": "Website",
   "unknown": "Onbekend",
   "notFoundDevices": "Geen apparaten gevonden",

@@ -4,6 +4,7 @@
     "description": "Sprache"
   },
   "guide": "Hilfe",
+  "selectButtonColor": "Wählen Sie die Schaltflächenfarbe",
   "web": "Webseite",
   "unknown": "Unbekannt",
   "notFoundDevices": "Keine Geräte gefunden",

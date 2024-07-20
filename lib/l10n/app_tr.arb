@@ -4,6 +4,7 @@
     "description": "Dil"
   },
   "guide": "Yardım",
+  "selectButtonColor": "Düğme rengini seçin",
   "web": "Web sitesi",
   "unknown": "Bilinmeyen",
   "notFoundDevices": "Cihaz bulunamadı",

@@ -5,6 +5,7 @@
     "description": "Ελληνική γλώσσα"
   },
   "guide": "Βοήθεια",
+  "selectButtonColor": "Επιλέξτε το χρώμα του κουμπιού",
   "web": "Ιστοσελίδα",
   "unknown": "Άγνωστο",
   "notFoundDevices": "Δεν βρέθηκαν συσκευές",

@@ -4,6 +4,7 @@
     "description": "Мова"
   },
   "guide": "Допомога",
+  "selectButtonColor": "Виберіть колір кнопки",
   "web": "Веб-сайт",
   "unknown": "Невідомо",
   "notFoundDevices": "Пристрої не знайдено",

@@ -51,14 +51,14 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     String value = AppLocalizations.of(context)?.localeName ?? 'es';
     return Scaffold(
-      floatingActionButton: IconButton(
-        color: Colors.white,
-        style: ButtonStyle(
-          backgroundColor:
-              WidgetStateProperty.all(const Color.fromRGBO(136, 39, 39, 1)),
-        ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromRGBO(136, 39, 39, 1),
         onPressed: _saveSettings,
-        icon: const Icon(Icons.save),
+        child: const Icon(
+          Icons.save,
+          size: 30,
+          color: Colors.white,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -174,9 +174,10 @@ class _SettingsPageState extends State<SettingsPage> {
                       Text(
                         AppLocalizations.of(context)!.settingsCustomMessage,
                         style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey),
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),

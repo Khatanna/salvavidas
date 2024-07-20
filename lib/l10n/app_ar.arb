@@ -4,6 +4,7 @@
     "description": "لغة"
   },
   "guide": "مساعدة",
+  "selectButtonColor": "حدد لون الزر",
   "web": "الصفحة الرئيسية",
   "unknown": "غير معروف",
   "notFoundDevices": "لم يتم العثور على أجهزة",

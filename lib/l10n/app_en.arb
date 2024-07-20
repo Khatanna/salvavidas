@@ -4,6 +4,7 @@
     "description": "Lang"
   },
   "guide": "Ayuda",
+  "selectButtonColor": "Select the button color",
   "web": "Web page",
   "unknown": "Unknown",
   "notFoundDevices": "No devices found",

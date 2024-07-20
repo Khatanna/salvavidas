@@ -4,6 +4,7 @@
     "description": "Idioma"
   },
   "guide": "Ajuda",
+  "selectButtonColor": "Selecione a cor do botão",
   "web": "Página inicial",
   "unknown": "Desconhecido",
   "notFoundDevices": "Dispositivos não encontrados",

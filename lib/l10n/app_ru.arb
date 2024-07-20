@@ -4,6 +4,7 @@
     "description": "Язык"
   },
   "guide": "Помощь",
+  "selectButtonColor": "Выберите цвет кнопки",
   "web": "Главная",
   "unknown": "Неизвестно",
   "notFoundDevices": "Устройства не найдены",

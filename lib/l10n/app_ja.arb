@@ -4,6 +4,7 @@
     "description": "言語"
   },
   "guide": "ガイド",
+  "selectButtonColor": "ボタンの色を選択",
   "web": "ウェブページ",
   "unknown": "不明",
   "notFoundDevices": "デバイスが見つかりません",
