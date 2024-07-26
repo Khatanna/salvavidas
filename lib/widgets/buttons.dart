@@ -20,13 +20,10 @@ class Buttons extends StatefulWidget {
 }
 
 class _ButtonsState extends State<Buttons> {
-  bool _isButtonEnabled = true;
-  bool _sending = false;
   final quickActions = const QuickActions();
 
-  Future<String> _getMessage(Button button) async {
+  Future<String> _getMessage(Button button, SharedPreferences prefs) async {
     final translates = AppLocalizations.of(context);
-    final prefs = await SharedPreferences.getInstance();
 
     switch (button) {
       case Button.red:
@@ -48,38 +45,15 @@ class _ButtonsState extends State<Buttons> {
     }
   }
 
-  _sendSms(Button button) async {
-    if (_sending) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            AppLocalizations.of(context)!.sending,
-          ),
-        ),
-      );
-
-      return;
-    }
+  _sendSms(
+    Button button,
+    SharedPreferences prefs,
+  ) async {
     final translates = AppLocalizations.of(context);
     final scaffold = ScaffoldMessenger.of(context);
-
     try {
-      setState(() {
-        _sending = true;
-      });
-
       List<Contact> contacts = await Operation.getContacts(button: button);
-
       final recipients = contacts.map((e) => e.phone).toList();
-      final location = await Geolocator.getCurrentPosition();
-      final prefs = await SharedPreferences.getInstance();
-      if (button == Button.red) {
-        final auxNumber = prefs.getString('customNumber');
-
-        if (auxNumber != null) {
-          recipients.add(auxNumber);
-        }
-      }
 
       if (recipients.isEmpty) {
         scaffold.showSnackBar(SnackBar(
@@ -89,23 +63,31 @@ class _ButtonsState extends State<Buttons> {
         return;
       }
 
+      if (button == Button.red) {
+        final auxNumber = prefs.getString('customNumber');
+
+        if (auxNumber != null) {
+          recipients.add(auxNumber);
+        }
+      }
+
+      final location = await Geolocator.getCurrentPosition();
       final textLocation =
           'https://www.google.com/maps?q=${location.latitude},${location.longitude}';
 
-      final message = await _getMessage(button);
+      final message = await _getMessage(button, prefs);
       final messageStrategy = prefs.getString('messageStrategy') ?? 'sms';
-
       await sendSMS(
         message: "$message: $textLocation",
         recipients: recipients,
         sendDirect: true,
       );
-
       if (messageStrategy == 'whatsapp') {
         for (var i = 0; i < recipients.length; i++) {
           final element = recipients[i];
           launchUrlString(
-              'https://wa.me/$element?text=$message: $textLocation');
+            'https://wa.me/$element?text=$message: $textLocation',
+          );
         }
       }
 
@@ -117,6 +99,7 @@ class _ButtonsState extends State<Buttons> {
         ),
       );
     } catch (e) {
+      Logger().e(e);
       scaffold.showSnackBar(
         SnackBar(
           content: Text(
@@ -124,14 +107,11 @@ class _ButtonsState extends State<Buttons> {
           ),
         ),
       );
-    } finally {
-      setState(() {
-        _sending = false;
-      });
     }
   }
 
-  void _loadQuickActions() {
+  Future<void> _loadQuickActions() async {
+    final prefs = await SharedPreferences.getInstance();
     quickActions.setShortcutItems(
       <ShortcutItem>[
         const ShortcutItem(
@@ -159,139 +139,142 @@ class _ButtonsState extends State<Buttons> {
 
     quickActions.initialize((type) {
       if (type == 'red') {
-        _onTap(Button.red);
+        _sendSms(Button.red, prefs);
       } else if (type == 'yellow') {
-        _onTap(Button.yellow);
+        _sendSms(Button.yellow, prefs);
       } else if (type == 'green') {
-        _onTap(Button.green);
+        _sendSms(Button.green, prefs);
       } else if (type == 'blue') {
-        _onTap(Button.blue);
+        _sendSms(Button.blue, prefs);
       }
     });
-  }
-
-  _onTap(Button button) {
-    if (_isButtonEnabled) {
-      _sendSms(button);
-      setState(() {
-        _isButtonEnabled = false;
-      });
-      Timer(const Duration(seconds: 1), () {
-        setState(() {
-          _isButtonEnabled = true;
-        });
-      });
-    }
   }
 
   @override
   void initState() {
     super.initState();
     _loadQuickActions();
-    // _initializePreferences();
   }
 
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        InkWell(
-          onTap: () => _onTap(Button.red),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+    return FutureBuilder(
+        future: SharedPreferences.getInstance(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+
+          // if (!snapshot.hasData) {
+          //   return const Center(
+          //     child: Text('Error al cargar las preferencias'),
+          //   );
+          // }
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image(
-                image: const AssetImage('assets/icons/security_red.png'),
-                height: screenHeight * 0.1,
+              InkWell(
+                onTap: () => _sendSms(Button.red, snapshot.data!),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image(
+                      image: const AssetImage('assets/icons/security_red.png'),
+                      height: screenHeight * 0.1,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.redButton,
+                        style: TextStyle(fontSize: screenWidth * 0.05),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(
-                width: 5,
+              SizedBox(
+                height: screenHeight * 0.01,
               ),
-              Expanded(
-                child: Text(
-                  AppLocalizations.of(context)!.redButton,
-                  style: TextStyle(fontSize: screenWidth * 0.05),
+              InkWell(
+                onTap: () => _sendSms(Button.yellow, snapshot.data!),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image(
+                      image:
+                          const AssetImage('assets/icons/security_yellow.png'),
+                      height: screenHeight * 0.1,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.yellowButton,
+                        style: TextStyle(fontSize: screenWidth * 0.05),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: screenHeight * 0.01,
+              ),
+              InkWell(
+                onTap: () => _sendSms(Button.green, snapshot.data!),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image(
+                      image:
+                          const AssetImage('assets/icons/security_green.png'),
+                      height: screenHeight * 0.1,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.greenButton,
+                        style: TextStyle(fontSize: screenWidth * 0.05),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: screenHeight * 0.01,
+              ),
+              InkWell(
+                onTap: () => _sendSms(Button.blue, snapshot.data!),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Image(
+                      image: const AssetImage('assets/icons/security_blue.png'),
+                      height: screenHeight * 0.1,
+                    ),
+                    const SizedBox(
+                      width: 5,
+                    ),
+                    Expanded(
+                      child: Text(
+                        AppLocalizations.of(context)!.blueButton,
+                        style: TextStyle(fontSize: screenWidth * 0.05),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
-          ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.01,
-        ),
-        InkWell(
-          onTap: () => _onTap(Button.yellow),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image(
-                image: const AssetImage('assets/icons/security_yellow.png'),
-                height: screenHeight * 0.1,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                child: Text(
-                  AppLocalizations.of(context)!.yellowButton,
-                  style: TextStyle(fontSize: screenWidth * 0.05),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.01,
-        ),
-        InkWell(
-          onTap: () => _onTap(Button.green),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image(
-                image: const AssetImage('assets/icons/security_green.png'),
-                height: screenHeight * 0.1,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                child: Text(
-                  AppLocalizations.of(context)!.greenButton,
-                  style: TextStyle(fontSize: screenWidth * 0.05),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: screenHeight * 0.01,
-        ),
-        InkWell(
-          onTap: () => _onTap(Button.blue),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Image(
-                image: const AssetImage('assets/icons/security_blue.png'),
-                height: screenHeight * 0.1,
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                child: Text(
-                  AppLocalizations.of(context)!.blueButton,
-                  style: TextStyle(fontSize: screenWidth * 0.05),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
+          );
+        });
   }
 }

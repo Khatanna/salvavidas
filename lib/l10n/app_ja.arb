@@ -4,6 +4,7 @@
     "description": "言語"
   },
   "guide": "ガイド",
+  "noCountryCode": "国コードが見つかりません",
   "selectButtonColor": "ボタンの色を選択",
   "web": "ウェブページ",
   "unknown": "不明",

@@ -4,6 +4,7 @@
     "description": "Lenguaje español"
   },
   "guide": "Ayuda",
+  "noCountryCode": "No se pudo obtener el código de país",
   "selectButtonColor": "Selecciona el color del botón",
   "web": "Pagina web",
   "unknown": "Desconocido",

@@ -8,7 +8,7 @@ import 'package:salvavidas/models/Button.dart';
 class Operation {
   static Future<Database> openDB() async {
     final dbPath = await getDatabasesPath();
-    return openDatabase(join(dbPath, 'contacts.db'), version: 2,
+    return openDatabase(join(dbPath, 'data.db'), version: 1,
         onCreate: (Database db, int version) async {
       await db.execute(
         '''

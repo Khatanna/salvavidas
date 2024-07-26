@@ -4,6 +4,7 @@
     "description": "Język"
   },
   "guide": "Pomoc",
+  "noCountryCode": "Nie znaleziono kodu kraju",
   "selectButtonColor": "Wybierz kolor przycisku",
   "web": "Strona główna",
   "unknown": "Nieznany",

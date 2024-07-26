@@ -11,7 +11,10 @@ class MapWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: Geolocator.getPositionStream(),
+      stream: Geolocator.getPositionStream(
+          locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+      )),
       builder: (context, snapshot) {
         final position = snapshot.data;
 

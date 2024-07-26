@@ -4,6 +4,7 @@
     "description": "Dil"
   },
   "guide": "Yardım",
+  "noCountryCode": "Ülke kodu bulunamadı",
   "selectButtonColor": "Düğme rengini seçin",
   "web": "Web sitesi",
   "unknown": "Bilinmeyen",

@@ -4,6 +4,7 @@
     "description": "语言"
   },
   "guide": "帮助",
+  "noCountryCode": "未找到国家代码",
   "selectButtonColor": "选择按钮颜色",
   "web": "主页",
   "unknown": "未知",

@@ -4,6 +4,7 @@
     "description": "Язык"
   },
   "guide": "Помощь",
+  "noCountryCode": "Код страны не найден",
   "selectButtonColor": "Выберите цвет кнопки",
   "web": "Главная",
   "unknown": "Неизвестно",

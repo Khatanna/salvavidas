@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:salvavidas/db/operation.dart';
 import 'package:salvavidas/models/Contact.dart' as Contact;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:country_code_picker/country_code_picker.dart' show codes;
 
 class ContactPage extends StatefulWidget {
   const ContactPage({super.key});
@@ -14,7 +17,11 @@ class ContactPage extends StatefulWidget {
 
 class _ContactPageState extends State<ContactPage> {
   List<Contact.Contact> _contacts = [];
+  String? _locale;
   _getNewPhoneNumber() {
+    if (_locale == null) {
+      return;
+    }
     FlutterContactPicker.pickPhoneContact().then((pick) async {
       final color = await showDialog<Color?>(
         context: context,
@@ -84,13 +91,16 @@ class _ContactPageState extends State<ContactPage> {
       );
       final contact = Contact.Contact(
         name: pick.fullName ?? "Sin nombre",
-        phone: pick.phoneNumber?.number ?? 'Sin número',
+        phone:
+            '$_locale${pick.phoneNumber?.number?.replaceAll(_locale ?? '', '')}',
         buttonColor: color ?? Colors.red,
       );
       Operation.insertContact(contact);
       setState(() {
         _contacts = [..._contacts, contact];
       });
+    }).catchError((e) {
+      Logger().e(e);
     });
   }
 
@@ -108,11 +118,59 @@ class _ContactPageState extends State<ContactPage> {
     });
   }
 
+  Future<void> _getCurrentLocation() async {
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
+      await _getCountryCodeFromLocation(position.latitude, position.longitude);
+    } catch (e) {
+      Logger().e(e);
+    }
+  }
+
+  Future<void> _getCountryCodeFromLocation(
+      double latitude, double longitude) async {
+    try {
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(latitude, longitude);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        String? countryCode = place.isoCountryCode;
+        if (countryCode != null) {
+          final code = codes.firstWhere((element) {
+            return element['code'] == countryCode;
+          })['dial_code'];
+
+          setState(() {
+            _locale = code;
+          });
+        } else {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(AppLocalizations.of(context)!.noCountryCode),
+              ),
+            );
+          });
+        }
+      }
+    } catch (e) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.noCountryCode),
+          ),
+        );
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
 
     _getContacts();
+    _getCurrentLocation();
   }
 
   @override
@@ -152,7 +210,18 @@ class _ContactPageState extends State<ContactPage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(136, 39, 39, 1),
         onPressed: _getNewPhoneNumber,
-        child: const Icon(Icons.person_add_alt, size: 30, color: Colors.white),
+        child: Builder(builder: (context) {
+          if (_locale == null) {
+            return const CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+            );
+          }
+          return const Icon(
+            Icons.person_add_alt,
+            size: 30,
+            color: Colors.white,
+          );
+        }),
       ),
     );
   }

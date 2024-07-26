@@ -61,6 +61,8 @@ dependencies:
   flutter_pdfview: ^1.3.2
   path_provider: ^2.1.3
   font_awesome_flutter: ^10.7.0
+  geocoding: ^3.0.0
+  country_code_picker: ^3.0.0
   # syncfusion_flutter_pdfviewer: ^26.1.42
 
 flutter_launcher_icons:

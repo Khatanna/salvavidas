@@ -4,6 +4,7 @@
     "description": "Lang"
   },
   "guide": "Ayuda",
+  "noCountryCode": "No country code found",
   "selectButtonColor": "Select the button color",
   "web": "Web page",
   "unknown": "Unknown",

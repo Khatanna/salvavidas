@@ -1,13 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/l10n/l10n.dart';
 import 'package:salvavidas/pages/contact_page.dart';
 import 'package:salvavidas/pages/help_page.dart';
 import 'package:salvavidas/pages/home_page.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:salvavidas/pages/login_page.dart';
 import 'package:salvavidas/pages/settings_page.dart';
 import 'package:salvavidas/pages/sync_page.dart';
@@ -15,7 +17,7 @@ import 'package:salvavidas/pages/term_and_conditions_page.dart';
 import 'package:salvavidas/provider/auth_provider.dart';
 import 'package:salvavidas/provider/lang_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:firebase_core/firebase_core.dart';
+
 import 'firebase_options.dart';
 
 void main() async {
@@ -78,7 +80,6 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
@@ -96,6 +97,14 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
           Padding(
             padding: const EdgeInsets.only(top: 10),
             child: PopupMenuButton(
+              offset: const Offset(0, 20),
+              popUpAnimationStyle: AnimationStyle(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
               itemBuilder: (BuildContext context) {
                 return <PopupMenuEntry>[
                   PopupMenuItem(
@@ -169,7 +178,9 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
                       ],
                     ),
                   ),
-                  const PopupMenuDivider(),
+                  const PopupMenuDivider(
+                    height: 5,
+                  ),
                   PopupMenuItem(
                     onTap: () => {
                       authProvider.logout().then((value) {
