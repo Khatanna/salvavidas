@@ -18,5 +18,6 @@ class L10n {
     const Locale('nl'),
     const Locale('kr'),
     const Locale('el'),
+    const Locale('hi'),
   ];
 }

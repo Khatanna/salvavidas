@@ -15,4 +15,5 @@ const Map<String, String> dictionaryFromCountry = {
   'nl': 'Nederlands',
   'el': 'Ελληνικά',
   'kr': '한국어',
+  'hi': 'हिन्दी',
 };

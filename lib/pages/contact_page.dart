@@ -22,6 +22,7 @@ class _ContactPageState extends State<ContactPage> {
     if (_locale == null) {
       return;
     }
+
     FlutterContactPicker.pickPhoneContact().then((pick) async {
       final color = await showDialog<Color?>(
         context: context,
@@ -89,10 +90,16 @@ class _ContactPageState extends State<ContactPage> {
           );
         },
       );
+
+      final phone = pick.phoneNumber != null &&
+              pick.phoneNumber!.number != null &&
+              pick.phoneNumber!.number!.contains('+')
+          ? pick.phoneNumber?.number
+          : '$_locale${pick.phoneNumber?.number}';
+
       final contact = Contact.Contact(
         name: pick.fullName ?? "Sin nombre",
-        phone:
-            '$_locale${pick.phoneNumber?.number?.replaceAll(_locale ?? '', '')}',
+        phone: '+${phone?.replaceAll(RegExp(r'[^\d]'), '')}',
         buttonColor: color ?? Colors.red,
       );
       Operation.insertContact(contact);
@@ -206,22 +213,25 @@ class _ContactPageState extends State<ContactPage> {
                     },
                   ),
                 );
-              }),
+              },
+            ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromRGBO(136, 39, 39, 1),
         onPressed: _getNewPhoneNumber,
-        child: Builder(builder: (context) {
-          if (_locale == null) {
-            return const CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        child: Builder(
+          builder: (context) {
+            if (_locale == null) {
+              return const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              );
+            }
+            return const Icon(
+              Icons.person_add_alt,
+              size: 30,
+              color: Colors.white,
             );
-          }
-          return const Icon(
-            Icons.person_add_alt,
-            size: 30,
-            color: Colors.white,
-          );
-        }),
+          },
+        ),
       ),
     );
   }

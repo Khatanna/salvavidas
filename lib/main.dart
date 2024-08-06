@@ -4,7 +4,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/l10n/l10n.dart';
 import 'package:salvavidas/pages/contact_page.dart';

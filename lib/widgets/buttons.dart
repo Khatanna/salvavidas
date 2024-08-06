@@ -55,20 +55,20 @@ class _ButtonsState extends State<Buttons> {
       List<Contact> contacts = await Operation.getContacts(button: button);
       final recipients = contacts.map((e) => e.phone).toList();
 
-      if (recipients.isEmpty) {
-        scaffold.showSnackBar(SnackBar(
-            content: Text(
-          translates!.emptyContacts,
-        )));
-        return;
-      }
-
       if (button == Button.red) {
         final auxNumber = prefs.getString('customNumber');
 
         if (auxNumber != null) {
           recipients.add(auxNumber);
         }
+      }
+
+      if (recipients.isEmpty) {
+        scaffold.showSnackBar(SnackBar(
+            content: Text(
+          translates!.emptyContacts,
+        )));
+        return;
       }
 
       final location = await Geolocator.getCurrentPosition();
