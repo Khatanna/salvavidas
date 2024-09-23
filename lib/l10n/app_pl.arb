@@ -4,6 +4,8 @@
     "description": "Język"
   },
   "guide": "Pomoc",
+  "country": "Kraj",
+  "selectCountryCode": "Wybierz kod kraju",
   "noCountryCode": "Nie znaleziono kodu kraju",
   "selectButtonColor": "Wybierz kolor przycisku",
   "web": "Strona główna",

@@ -4,6 +4,8 @@
     "description": "भाषा"
   },
   "guide": "मार्गदर्शिका",
+  "country": "देश",
+  "selectCountryCode": "देश कोड चुनें",
   "noCountryCode": "कोई देश कोड नहीं मिला",
   "selectButtonColor": "बटन का रंग चुनें",
   "web": "वेब पेज",

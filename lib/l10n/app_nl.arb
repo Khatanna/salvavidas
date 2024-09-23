@@ -4,6 +4,8 @@
     "description": "Taal"
   },
   "guide": "Help",
+  "country": "Land",
+  "selectCountryCode": "Selecteer landcode",
   "noCountryCode": "Landcode niet gevonden",
   "selectButtonColor": "Selecteer de knopkleur",
   "web": "Website",

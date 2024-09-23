@@ -5,6 +5,8 @@
     "description": "Ελληνική γλώσσα"
   },
   "guide": "Βοήθεια",
+  "country": "Χώρα",
+  "selectCountryCode": "Επιλέξτε τον κωδικό χώρας",
   "noCountryCode": "Δεν βρέθηκε κωδικός χώρας",
   "selectButtonColor": "Επιλέξτε το χρώμα του κουμπιού",
   "web": "Ιστοσελίδα",

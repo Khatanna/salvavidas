@@ -4,6 +4,8 @@
     "description": "Dil"
   },
   "guide": "Yardım",
+  "country": "Ülke",
+  "selectCountryCode": "Ülke kodu seçin",
   "noCountryCode": "Ülke kodu bulunamadı",
   "selectButtonColor": "Düğme rengini seçin",
   "web": "Web sitesi",

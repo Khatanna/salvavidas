@@ -6,6 +6,7 @@ import 'package:salvavidas/constants.dart';
 import 'package:salvavidas/l10n/l10n.dart';
 import 'package:salvavidas/provider/lang_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -40,6 +41,14 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  void onPickCountry(CountryCode countryCode) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    if (countryCode.dialCode != null) {
+      await prefs.setString('countryCode', countryCode.dialCode!);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -65,6 +74,62 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                const Icon(
+                  Icons.settings,
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  AppLocalizations.of(context)!.settings,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.flag,
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      AppLocalizations.of(context)!.country,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+                FutureBuilder(
+                  future: SharedPreferences.getInstance(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const CircularProgressIndicator();
+                    }
+
+                    final prefs = snapshot.data as SharedPreferences;
+
+                    return CountryCodePicker(
+                      onChanged: onPickCountry,
+                      initialSelection: prefs.getString('countryCode') ?? 'US',
+                      showCountryOnly: false,
+                      showOnlyCountryWhenClosed: true,
+                      alignLeft: false,
+                    );
+                  },
+                ),
+              ],
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

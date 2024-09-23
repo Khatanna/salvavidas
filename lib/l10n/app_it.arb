@@ -4,6 +4,8 @@
     "description": "Lingua"
   },
   "guide": "Guida",
+  "country": "Paese",
+  "selectCountryCode": "Seleziona il codice del paese",
   "noCountryCode": "Codice paese non trovato",
   "selectButtonColor": "Seleziona il colore del pulsante",
   "web": "Pagina web",

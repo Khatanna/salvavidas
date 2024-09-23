@@ -4,6 +4,8 @@
     "description": "لغة"
   },
   "guide": "مساعدة",
+  "country": "البلد",
+  "selectCountryCode": "حدد رمز البلد",
   "noCountryCode": "لم يتم العثور على رمز البلد",
   "selectButtonColor": "حدد لون الزر",
   "web": "الصفحة الرئيسية",

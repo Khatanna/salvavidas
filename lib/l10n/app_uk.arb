@@ -4,6 +4,8 @@
     "description": "Мова"
   },
   "guide": "Допомога",
+  "country": "Країна",
+  "selectCountryCode": "Виберіть код країни",
   "noCountryCode": "Код країни не знайдено",
   "selectButtonColor": "Виберіть колір кнопки",
   "web": "Веб-сайт",

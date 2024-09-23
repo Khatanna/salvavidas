@@ -4,6 +4,8 @@
     "description": "Sprache"
   },
   "guide": "Hilfe",
+  "country": "Land",
+  "selectCountryCode": "Wählen Sie den Ländercode",
   "noCountryCode": "Ländercode nicht gefunden",
   "selectButtonColor": "Wählen Sie die Schaltflächenfarbe",
   "web": "Webseite",

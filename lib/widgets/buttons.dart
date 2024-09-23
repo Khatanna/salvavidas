@@ -2,13 +2,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:logger/logger.dart';
 import 'package:quick_actions/quick_actions.dart';
 import 'package:salvavidas/db/operation.dart';
 import 'package:salvavidas/models/Contact.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:salvavidas/models/Button.dart';
 
@@ -78,9 +78,9 @@ class _ButtonsState extends State<Buttons> {
       final message = await _getMessage(button, prefs);
       final messageStrategy = prefs.getString('messageStrategy') ?? 'sms';
       await sendSMS(
-        message: "$message: $textLocation",
         recipients: recipients,
-        sendDirect: true,
+        message: "$message: $textLocation",
+        // sendDirect: true,
       );
       if (messageStrategy == 'whatsapp') {
         for (var i = 0; i < recipients.length; i++) {

@@ -14,7 +14,10 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(scopes: [
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email'
+      ]).signIn();
 
       if (googleUser != null) {
         final GoogleSignInAuthentication googleAuth =
@@ -35,8 +38,7 @@ class AuthProvider extends ChangeNotifier {
           notifyListeners();
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   final GoogleSignIn _googleSignIn = GoogleSignIn();

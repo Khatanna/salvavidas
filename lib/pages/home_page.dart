@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:salvavidas/widgets/buttons.dart';
 import 'package:salvavidas/widgets/map.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _requestPermissions() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.sms,
+      Permission.phone,
       Permission.location,
       Permission.contacts,
       Permission.bluetooth,
@@ -26,6 +27,7 @@ class _HomePageState extends State<HomePage> {
     ].request();
 
     await _handlePermissionStatus(statuses[Permission.sms], "SMS");
+    await _handlePermissionStatus(statuses[Permission.phone], "phone");
     await _handlePermissionStatus(statuses[Permission.location], "location");
     await _handlePermissionStatus(statuses[Permission.contacts], "contacts");
     await _handlePermissionStatus(statuses[Permission.bluetooth], "Bluetooth");
@@ -67,11 +69,6 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override
