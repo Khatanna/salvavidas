@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/provider/auth_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,14 +14,32 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _policy = false;
+
   @override
   void initState() {
     super.initState();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    authProvider.signInWithGoogle().then((value) {
-      if (authProvider.isAuth) {
-        context.go('/home');
+    SharedPreferences.getInstance().then((prefs) {
+      final snackContext = ScaffoldMessenger.of(context);
+      if (prefs.getBool('policy') == null || prefs.getBool('policy') == false) {
+        snackContext.showSnackBar(
+          const SnackBar(
+            content: Text('Debes aceptar los términos y condiciones'),
+          ),
+        );
+        return;
       }
+
+      setState(() {
+        _policy = prefs.getBool('policy') ?? false;
+      });
+
+      authProvider.signInWithGoogle().then((value) {
+        if (authProvider.isAuth) {
+          context.go('/home');
+        }
+      });
     });
   }
 
@@ -73,10 +93,46 @@ class _LoginPageState extends State<LoginPage> {
               ),
               text: "Iniciar sesión con Google",
               padding: const EdgeInsets.only(left: 15, right: 15),
-              onPressed: () {
+              onPressed: () async {
+                final snackContext = ScaffoldMessenger.of(context);
+                final prefs = await SharedPreferences.getInstance();
+
+                if (prefs.getBool('policy') == null ||
+                    prefs.getBool('policy') == false) {
+                  snackContext.showSnackBar(
+                    const SnackBar(
+                      content: Text('Debes aceptar los términos y condiciones'),
+                    ),
+                  );
+                  return;
+                }
+
                 authProvider.signInWithGoogle().then((value) {
                   context.go('/home');
                 });
+              },
+            ),
+            const SizedBox(
+              height: 40,
+            ),
+            RadioListTile(
+              title: const Text(
+                "Acepto los términos y condiciones",
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              toggleable: true,
+              fillColor: WidgetStateProperty.all(Colors.white),
+              value: _policy ? 1 : 0,
+              groupValue: 1,
+              onChanged: (value) async {
+                setState(() {
+                  _policy = !_policy;
+                });
+                final prefs = await SharedPreferences.getInstance();
+
+                prefs.setBool('policy', value != null);
               },
             ),
           ],
