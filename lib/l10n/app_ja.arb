@@ -32,6 +32,8 @@
   "sync": "デバイス",
   "emptyContacts": "保存された連絡先がありません",
   "help": "プライバシーポリシー",
+  "showTerms": "利用規約を表示",
+  "acceptTerms": "利用規約に同意する",
   "settingsLanguage": "言語",
   "settingsCustomMessage": "カスタムメッセージ",
   "redButtonMessaje": "緊急の助けが必要です！命の危険があります。指定された場所にいます",

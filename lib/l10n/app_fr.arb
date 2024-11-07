@@ -32,6 +32,8 @@
   "sync": "Appareils",
   "emptyContacts": "Aucun contact enregistré",
   "help": "Politique de confidentialité",
+  "showTerms": "Afficher les termes et conditions",
+  "acceptTerms": "J'accepte les termes et conditions",
   "settingsLanguage": "Langue",
   "settingsCustomMessage": "Message personnalisé",
   "redButtonMessaje": "J'ai besoin d'aide urgente! ma vie est en danger, je suis à l'emplacement indiqué",

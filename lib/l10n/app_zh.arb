@@ -32,6 +32,8 @@
   "sync": "设备",
   "emptyContacts": "没有保存的联系人",
   "help": "隐私政策",
+  "showTerms": "显示条款",
+  "acceptTerms": "我同意条款",
   "settingsLanguage": "语言",
   "settingsCustomMessage": "自定义消息",
   "sending": "发送中",

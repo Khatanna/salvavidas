@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/provider/auth_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -91,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              text: "Iniciar sesión con Google",
+              text: "Iniciar sesión",
               padding: const EdgeInsets.only(left: 15, right: 15),
               onPressed: () async {
                 final snackContext = ScaffoldMessenger.of(context);
@@ -116,9 +117,9 @@ class _LoginPageState extends State<LoginPage> {
               height: 40,
             ),
             RadioListTile(
-              title: const Text(
-                "Acepto los términos y condiciones",
-                style: TextStyle(
+              title: Text(
+                AppLocalizations.of(context)!.acceptTerms,
+                style: const TextStyle(
                   color: Colors.white,
                 ),
               ),
@@ -134,6 +135,20 @@ class _LoginPageState extends State<LoginPage> {
 
                 prefs.setBool('policy', value != null);
               },
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            TextButton(
+              onPressed: () {
+                launchUrlString('https://gottret.com/salvavidas/sample-page/');
+              },
+              child: Text(
+                AppLocalizations.of(context)!.showTerms,
+                style: const TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),

@@ -32,6 +32,8 @@
   "sync": "Cihazlar",
   "emptyContacts": "Kaydedilmiş kişi yok",
   "help": "Gizlilik Politikası",
+  "showTerms": "Şartları göster",
+  "acceptTerms": "Şartları kabul ediyorum",
   "settingsLanguage": "Dil",
   "settingsCustomMessage": "Özel mesaj",
   "redButtonMessaje": "Acil yardıma ihtiyacım var! hayatım tehlikede, belirtilen konumdayım",

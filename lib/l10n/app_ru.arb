@@ -32,6 +32,8 @@
   "sync": "Устройства",
   "emptyContacts": "Нет сохраненных контактов",
   "help": "Политика конфиденциальности",
+  "showTerms": "Показать условия",
+  "acceptTerms": "Я согласен с условиями",
   "settingsLanguage": "Язык",
   "settingsCustomMessage": "Пользователь",
   "sending": "Отправка",

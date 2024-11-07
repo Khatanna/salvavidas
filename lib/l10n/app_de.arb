@@ -32,6 +32,8 @@
   "sync": "Geräte",
   "emptyContacts": "Keine gespeicherten Kontakte",
   "help": "Datenschutzrichtlinie",
+  "showTerms": "Allgemeine Geschäftsbedingungen anzeigen",
+  "acceptTerms": "Ich akzeptiere die Allgemeinen Geschäftsbedingungen",
   "settingsLanguage": "Sprache",
   "settingsCustomMessage": "Benutzerdefinierte Nachricht",
   "redButtonMessaje": "Ich brauche dringend Hilfe! mein Leben ist in Gefahr, ich bin am angegebenen Ort",
