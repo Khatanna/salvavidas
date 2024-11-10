@@ -1,11 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/provider/auth_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,12 +18,98 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+const Set<String> _kIds = <String>{
+  'anual',
+  'quarterly',
+  'semiannual',
+};
+
 class _LoginPageState extends State<LoginPage> {
   bool _policy = false;
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
+
+  Future<void> loadPurchases() async {
+    final bool available = await _inAppPurchase.isAvailable();
+    if (!available) {
+      return;
+    }
+
+    final ProductDetailsResponse response =
+        await _inAppPurchase.queryProductDetails(<String>{
+      'com.gottret.salvavidas.premium',
+    });
+
+    if (response.notFoundIDs.isNotEmpty) {
+      return;
+    }
+
+    final ProductDetails productDetails = response.productDetails.first;
+
+    final PurchaseParam purchaseParam =
+        PurchaseParam(productDetails: productDetails);
+    _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+  }
+
+  _showPendingUI() {
+    Logger().i('showPendingUI');
+  }
+
+  _handleError(IAPError error) {
+    Logger().e('Error: ${error.message}');
+  }
+
+  _verifyPurchase(PurchaseDetails purchaseDetails) async {
+    final bool valid = await _verifyPurchase(purchaseDetails);
+    return valid;
+  }
+
+  _deliverProduct(PurchaseDetails purchaseDetails) {
+    Logger().i('deliverProduct');
+  }
+
+  _handleInvalidPurchase(PurchaseDetails purchaseDetails) {
+    Logger().e('handleInvalidPurchase');
+  }
+
+  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
+    purchaseDetailsList.forEach((PurchaseDetails purchaseDetails) async {
+      if (purchaseDetails.status == PurchaseStatus.pending) {
+        _showPendingUI();
+      } else {
+        if (purchaseDetails.status == PurchaseStatus.error) {
+          _handleError(purchaseDetails.error!);
+        } else if (purchaseDetails.status == PurchaseStatus.purchased ||
+            purchaseDetails.status == PurchaseStatus.restored) {
+          bool valid = await _verifyPurchase(purchaseDetails);
+          if (valid) {
+            _deliverProduct(purchaseDetails);
+          } else {
+            _handleInvalidPurchase(purchaseDetails);
+          }
+        }
+        if (purchaseDetails.pendingCompletePurchase) {
+          await InAppPurchase.instance.completePurchase(purchaseDetails);
+        }
+      }
+    });
+  }
 
   @override
   void initState() {
-    super.initState();
+    final Stream<List<PurchaseDetails>> purchaseUpdated =
+        _inAppPurchase.purchaseStream;
+
+    _subscription = purchaseUpdated.listen(
+      (purchaseDetailsList) {
+        _listenToPurchaseUpdated(purchaseDetailsList);
+      },
+      onDone: () => _subscription.cancel(),
+      onError: (error) => Logger().e('Error: $error'),
+    );
+
+    // initStoreInfo();
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     SharedPreferences.getInstance().then((prefs) {
       final snackContext = ScaffoldMessenger.of(context);
@@ -42,6 +132,7 @@ class _LoginPageState extends State<LoginPage> {
         }
       });
     });
+    super.initState();
   }
 
   @override

@@ -159,7 +159,8 @@ class _ButtonsState extends State<Buttons> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+    double fontSize = MediaQuery.of(context).textScaler.scale(11);
+
     return FutureBuilder(
         future: SharedPreferences.getInstance(),
         builder: (context, snapshot) {
@@ -193,7 +194,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.redButton,
-                        style: TextStyle(fontSize: screenWidth * 0.05),
+                        style: TextStyle(fontSize: fontSize),
                       ),
                     ),
                   ],
@@ -218,7 +219,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.yellowButton,
-                        style: TextStyle(fontSize: screenWidth * 0.05),
+                        style: TextStyle(fontSize: fontSize),
                       ),
                     ),
                   ],
@@ -243,7 +244,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.greenButton,
-                        style: TextStyle(fontSize: screenWidth * 0.05),
+                        style: TextStyle(fontSize: fontSize),
                       ),
                     ),
                   ],
@@ -267,7 +268,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.blueButton,
-                        style: TextStyle(fontSize: screenWidth * 0.05),
+                        style: TextStyle(fontSize: fontSize),
                       ),
                     ),
                   ],

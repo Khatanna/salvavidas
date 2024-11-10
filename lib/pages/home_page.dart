@@ -27,7 +27,6 @@ class _HomePageState extends State<HomePage> {
     ].request();
 
     await _handlePermissionStatus(statuses[Permission.sms], "SMS");
-    await _handlePermissionStatus(statuses[Permission.phone], "phone");
     await _handlePermissionStatus(statuses[Permission.location], "location");
     await _handlePermissionStatus(statuses[Permission.contacts], "contacts");
     await _handlePermissionStatus(statuses[Permission.bluetooth], "Bluetooth");
