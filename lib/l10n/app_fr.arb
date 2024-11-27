@@ -33,6 +33,8 @@
   "emptyContacts": "Aucun contact enregistré",
   "help": "Politique de confidentialité",
   "showTerms": "Afficher les termes et conditions",
+  "subscriptions": "Abonnements",
+  "continueWithoutSubscription": "Continuer sans abonnement",
   "acceptTerms": "J'accepte les termes et conditions",
   "settingsLanguage": "Langue",
   "settingsCustomMessage": "Message personnalisé",

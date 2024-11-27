@@ -159,7 +159,6 @@ class _ButtonsState extends State<Buttons> {
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
-    double fontSize = MediaQuery.of(context).textScaler.scale(11);
 
     return FutureBuilder(
         future: SharedPreferences.getInstance(),
@@ -169,12 +168,6 @@ class _ButtonsState extends State<Buttons> {
               child: CircularProgressIndicator(),
             );
           }
-
-          // if (!snapshot.hasData) {
-          //   return const Center(
-          //     child: Text('Error al cargar las preferencias'),
-          //   );
-          // }
 
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -194,7 +187,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.redButton,
-                        style: TextStyle(fontSize: fontSize),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ],
@@ -219,7 +212,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.yellowButton,
-                        style: TextStyle(fontSize: fontSize),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ],
@@ -244,7 +237,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.greenButton,
-                        style: TextStyle(fontSize: fontSize),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ],
@@ -268,7 +261,7 @@ class _ButtonsState extends State<Buttons> {
                     Expanded(
                       child: Text(
                         AppLocalizations.of(context)!.blueButton,
-                        style: TextStyle(fontSize: fontSize),
+                        style: const TextStyle(fontSize: 14),
                       ),
                     ),
                   ],

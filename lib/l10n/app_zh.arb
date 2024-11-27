@@ -33,6 +33,8 @@
   "emptyContacts": "没有保存的联系人",
   "help": "隐私政策",
   "showTerms": "显示条款",
+  "subscriptions": "订阅",
+  "continueWithoutSubscription": "继续不订阅",
   "acceptTerms": "我同意条款",
   "settingsLanguage": "语言",
   "settingsCustomMessage": "自定义消息",

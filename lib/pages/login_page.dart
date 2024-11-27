@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:salvavidas/provider/auth_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +9,7 @@ import 'package:sign_in_button/sign_in_button.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:logger/logger.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -19,36 +19,86 @@ class LoginPage extends StatefulWidget {
 }
 
 const Set<String> _kIds = <String>{
-  'anual',
-  'quarterly',
-  'semiannual',
+  '01salvavidas',
 };
 
 class _LoginPageState extends State<LoginPage> {
   bool _policy = false;
+
   final InAppPurchase _inAppPurchase = InAppPurchase.instance;
   late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   Future<void> loadPurchases() async {
+    final ctx = context;
     final bool available = await _inAppPurchase.isAvailable();
     if (!available) {
       return;
     }
 
-    final ProductDetailsResponse response =
-        await _inAppPurchase.queryProductDetails(<String>{
-      'com.gottret.salvavidas.premium',
-    });
+    showDialog(
+      context: ctx,
+      builder: (context) => FutureBuilder(
+        future: InAppPurchase.instance.queryProductDetails(_kIds),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-    if (response.notFoundIDs.isNotEmpty) {
-      return;
-    }
+          final products = snapshot.data as ProductDetailsResponse;
 
-    final ProductDetails productDetails = response.productDetails.first;
+          products.productDetails.sort((a, b) {
+            return a.price.compareTo(b.price);
+          });
 
-    final PurchaseParam purchaseParam =
-        PurchaseParam(productDetails: productDetails);
-    _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.subscriptions,
+              style: const TextStyle(fontSize: 20),
+            ),
+            scrollable: true,
+            content: Column(
+              children: [
+                for (var (index, product) in products.productDetails.indexed)
+                  ListTile(
+                    onTap: () {
+                      InAppPurchase.instance.buyNonConsumable(
+                        purchaseParam: PurchaseParam(
+                          productDetails: product,
+                          applicationUserName: 'salvavidas.user',
+                        ),
+                      );
+                    },
+                    leading: Image.asset(
+                      index == 0
+                          ? 'assets/icons/security_red.png'
+                          : index == 1
+                              ? 'assets/icons/security_yellow.png'
+                              : index == 2
+                                  ? 'assets/icons/security_green.png'
+                                  : 'assets/icons/security_blue.png',
+                    ),
+                    title: Text(
+                      index == 0
+                          ? '(Salvavidas) 3 meses'
+                          : index == 1
+                              ? '(Salvavidas) 6 meses'
+                              : index == 2
+                                  ? '(Salvavidas) 1 año'
+                                  : '1 Semana de prueba',
+                      style: const TextStyle(fontSize: 12, fontFamily: 'arial'),
+                      locale: Localizations.localeOf(context),
+                    ),
+                    subtitle: Text(
+                      product.price,
+                      style: const TextStyle(fontSize: 12, fontFamily: 'arial'),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   _showPendingUI() {
@@ -97,6 +147,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void initState() {
+    super.initState();
+
     final Stream<List<PurchaseDetails>> purchaseUpdated =
         _inAppPurchase.purchaseStream;
 
@@ -107,10 +159,6 @@ class _LoginPageState extends State<LoginPage> {
       onDone: () => _subscription.cancel(),
       onError: (error) => Logger().e('Error: $error'),
     );
-
-    // initStoreInfo();
-
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     SharedPreferences.getInstance().then((prefs) {
       final snackContext = ScaffoldMessenger.of(context);
       if (prefs.getBool('policy') == null || prefs.getBool('policy') == false) {
@@ -125,14 +173,8 @@ class _LoginPageState extends State<LoginPage> {
       setState(() {
         _policy = prefs.getBool('policy') ?? false;
       });
-
-      authProvider.signInWithGoogle().then((value) {
-        if (authProvider.isAuth) {
-          context.go('/home');
-        }
-      });
     });
-    super.initState();
+    loadPurchases();
   }
 
   @override

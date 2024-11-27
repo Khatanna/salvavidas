@@ -33,6 +33,8 @@
   "emptyContacts": "保存された連絡先がありません",
   "help": "プライバシーポリシー",
   "showTerms": "利用規約を表示",
+  "subscriptions": "サブスクリプション",
+  "continueWithoutSubscription": "サブスクリプションなしで続行",
   "acceptTerms": "利用規約に同意する",
   "settingsLanguage": "言語",
   "settingsCustomMessage": "カスタムメッセージ",

@@ -33,6 +33,8 @@
   "emptyContacts": "Keine gespeicherten Kontakte",
   "help": "Datenschutzrichtlinie",
   "showTerms": "Allgemeine Geschäftsbedingungen anzeigen",
+  "subscriptions": "Abonnements",
+  "continueWithoutSubscription": "Weiter ohne Abonnement",
   "acceptTerms": "Ich akzeptiere die Allgemeinen Geschäftsbedingungen",
   "settingsLanguage": "Sprache",
   "settingsCustomMessage": "Benutzerdefinierte Nachricht",

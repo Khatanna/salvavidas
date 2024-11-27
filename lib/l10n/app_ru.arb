@@ -33,6 +33,8 @@
   "emptyContacts": "Нет сохраненных контактов",
   "help": "Политика конфиденциальности",
   "showTerms": "Показать условия",
+  "subscriptions": "Подписки",
+  "continueWithoutSubscription": "Продолжить без подписки",
   "acceptTerms": "Я согласен с условиями",
   "settingsLanguage": "Язык",
   "settingsCustomMessage": "Пользователь",

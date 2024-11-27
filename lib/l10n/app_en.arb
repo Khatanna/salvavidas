@@ -34,6 +34,8 @@
   "emptyContacts": "No contacts saved",
   "help": "Privacy policy",
   "showTerms": "View terms and conditions",
+  "subscriptions": "Subscriptions",
+  "continueWithoutSubscription": "Continue without subscription",
   "acceptTerms": "I accept the terms and conditions",
   "settingsLanguage": "Language",
   "settingsCustomMessage": "Custom message",

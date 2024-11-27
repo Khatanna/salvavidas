@@ -34,6 +34,8 @@
   "emptyContacts": "저장된 연락처가 없습니다",
   "help": "개인정보 보호 정책",
   "showTerms": "약관 보기",
+  "subscriptions": "구독",
+  "continueWithoutSubscription": "구독 없이 계속",
   "acceptTerms": "약관 및 조건에 동의합니다",
   "settingsLanguage": "언어",
   "settingsCustomMessage": "맞춤 메시지",

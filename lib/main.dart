@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,7 +18,8 @@ import 'package:salvavidas/pages/term_and_conditions_page.dart';
 import 'package:salvavidas/provider/auth_provider.dart';
 import 'package:salvavidas/provider/lang_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-
+import 'package:in_app_purchase/in_app_purchase.dart';
+import 'package:logger/logger.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -48,8 +51,14 @@ class ScaffoldWithNavBar extends StatefulWidget {
   State<ScaffoldWithNavBar> createState() => _ScaffoldWithNavBarState();
 }
 
+const Set<String> _kIds = <String>{
+  '01salvavidas',
+};
+
 class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
   int _selectedIndex = 0;
+  final InAppPurchase _inAppPurchase = InAppPurchase.instance;
+  late StreamSubscription<List<PurchaseDetails>> _subscription;
 
   final Map<int, String> _routes = {
     0: '/home',
@@ -74,6 +83,89 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
       _selectedIndex = index;
     });
     context.go(_routes[index]!);
+  }
+
+  void showPurchaseDialog() async {
+    final ctx = context;
+    final bool available = await _inAppPurchase.isAvailable();
+    if (!available) {
+      return;
+    }
+
+    showDialog(
+      context: ctx,
+      builder: (context) => FutureBuilder(
+        future: InAppPurchase.instance.queryProductDetails(_kIds),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final products = snapshot.data as ProductDetailsResponse;
+
+          products.productDetails.sort((a, b) {
+            return a.price.compareTo(b.price);
+          });
+
+          return AlertDialog(
+            title: Text(
+              AppLocalizations.of(context)!.subscriptions,
+              style: const TextStyle(fontSize: 20),
+            ),
+            scrollable: true,
+            content: Column(
+              children: [
+                for (var (index, product) in products.productDetails.indexed)
+                  ListTile(
+                    onTap: () {
+                      InAppPurchase.instance.buyNonConsumable(
+                        purchaseParam: PurchaseParam(
+                          productDetails: product,
+                          applicationUserName: 'salvavidas.user',
+                        ),
+                      );
+                    },
+                    leading: Image.asset(
+                      index == 0
+                          ? 'assets/icons/security_red.png'
+                          : index == 1
+                              ? 'assets/icons/security_yellow.png'
+                              : index == 2
+                                  ? 'assets/icons/security_green.png'
+                                  : 'assets/icons/security_blue.png',
+                    ),
+                    title: Text(
+                      index == 0
+                          ? '(Salvavidas) 3 meses'
+                          : index == 1
+                              ? '(Salvavidas) 6 meses'
+                              : index == 2
+                                  ? '(Salvavidas) 1 año'
+                                  : '1 Semana de prueba',
+                      style: const TextStyle(fontSize: 12, fontFamily: 'arial'),
+                      locale: Localizations.localeOf(context),
+                    ),
+                    subtitle: Text(
+                      product.price,
+                      style: const TextStyle(fontSize: 12, fontFamily: 'arial'),
+                    ),
+                  ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.continueWithoutSubscription,
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -179,6 +271,23 @@ class _ScaffoldWithNavBarState extends State<ScaffoldWithNavBar> {
                   ),
                   const PopupMenuDivider(
                     height: 5,
+                  ),
+                  PopupMenuItem(
+                    onTap: showPurchaseDialog,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.add_shopping_cart,
+                          color: Color.fromRGBO(136, 39, 39, 1),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          AppLocalizations.of(context)!.subscriptions,
+                        ),
+                      ],
+                    ),
                   ),
                   PopupMenuItem(
                     onTap: () => {
